@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>환경 모니터링</title>
+  </head>
+  <body>
+    <h2>실내 환경 모니터링</h2>
+
+    <p>온도 : <span id="temp">-</span> ℃</p>
+    <p>습도 : <span id="hum">-</span> %</p>
+    <p>상태 : <span id="status">-</span></p>
+
+    <script>
+      async function fetchData() {
+        const res = await fetch("/data");
+        const data = await res.json();
+
+        document.getElementById("temp").innerText = data.temperature;
+        document.getElementById("hum").innerText = data.humidity;
+        document.getElementById("status").innerText = data.status;
+      }
+
+      setInterval(fetchData, 2000);
+    </script>
+  </body>
+</html>
