@@ -1,42 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>환경 모니터링</title>
+    <title>Smart Environment Dashboard</title>
     <style>
       body {
-        font-family: Arial;
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #f4f6f9;
+        color: #333;
+      }
+      header {
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 30px;
+        max-width: 900px;
+        margin: auto;
+      }
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         text-align: center;
       }
-      .box {
-        width: 300px;
-        margin: auto;
+      .title {
+        font-size: 16px;
+        color: #777;
+        margin-bottom: 10px;
+      }
+      .value {
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .status-box {
+        grid-column: span 2;
         padding: 20px;
-        border: 2px solid #333;
-        border-radius: 10px;
+        border-radius: 12px;
+        text-align: center;
+        font-size: 26px;
+        font-weight: bold;
+        color: white;
       }
       .good {
-        color: green;
+        background: #2ecc71;
       }
       .caution {
-        color: blue;
+        background: #3498db;
       }
       .danger {
-        color: red;
-        font-weight: bold;
+        background: #e74c3c;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <h2>스마트 실내 환경 모니터링</h2>
+    <header>🌱 Smart Indoor Environment Monitoring System</header>
 
-    <div class="box">
-      <p>🌡 온도 : <span id="temp">-</span> ℃</p>
-      <p>💧 습도 : <span id="hum">-</span> %</p>
-      <p>💡 조도 : <span id="light">-</span></p>
-      <p>⚙ 모드 : <span id="mode">-</span></p>
-      <p>🚦 상태 : <span id="level">-</span></p>
+    <div class="container">
+      <div class="card">
+        <div class="title">🌡 Temperature</div>
+        <div class="value"><span id="temp">-</span> ℃</div>
+      </div>
+
+      <div class="card">
+        <div class="title">💧 Humidity</div>
+        <div class="value"><span id="hum">-</span> %</div>
+      </div>
+
+      <div class="card">
+        <div class="title">💡 Light Level</div>
+        <div class="value"><span id="light">-</span></div>
+      </div>
+
+      <div class="card">
+        <div class="title">⚙ Mode</div>
+        <div class="value"><span id="mode">-</span></div>
+      </div>
+
+      <div id="statusBox" class="status-box good">
+        상태 : <span id="level">-</span>
+      </div>
+
+      <!-- Control Panel -->
+      <div class="card" style="grid-column: span 2">
+        <div class="title">🎮 Control Panel</div>
+        <button onclick="sendCmd('auto')">AUTO 모드</button>
+        <button onclick="sendCmd('manual')">MANUAL 모드</button>
+        <br /><br />
+        <button onclick="sendCmd('light_on')">💡 조명 ON</button>
+        <button onclick="sendCmd('light_off')">💡 조명 OFF</button>
+      </div>
     </div>
 
     <script>
@@ -48,17 +120,20 @@
         document.getElementById("hum").innerText = data.humidity;
         document.getElementById("light").innerText = data.light;
         document.getElementById("mode").innerText = data.mode;
+        document.getElementById("level").innerText = data.level;
 
-        const levelElem = document.getElementById("level");
-        levelElem.innerText = data.level;
+        const statusBox = document.getElementById("statusBox");
+        statusBox.className = "status-box";
 
-        levelElem.className = "";
-        if (data.level === "GOOD") levelElem.classList.add("good");
-        else if (data.level === "CAUTION") levelElem.classList.add("caution");
-        else if (data.level === "DANGER") levelElem.classList.add("danger");
+        if (data.level === "GOOD") statusBox.classList.add("good");
+        else if (data.level === "CAUTION") statusBox.classList.add("caution");
+        else if (data.level === "DANGER") statusBox.classList.add("danger");
       }
-
       setInterval(fetchData, 500);
+
+      async function sendCmd(cmd) {
+        await fetch("/control/" + cmd);
+      }
     </script>
   </body>
 </html>
