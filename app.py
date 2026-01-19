@@ -3,22 +3,16 @@ import serial
 
 app=Flask(__name__)
 
-ser=None
+ser=serial.Serial("COM3",9600,timeout=1)
 
-latest_data={
-    "temperature":"N/A",
-    "humidity":"N/A",
-    "status":"UNKNOWN"
+
+latest_data = {
+    "temperature": "-",
+    "humidity": "-",
+    "light": "-",
+    "mode": "-",
+    "level": "-"
 }
-
-def init_serial():
-    global ser
-    try:
-        ser=serial.Serial("COM3",9600,timeout=1)
-        print("Serial connected")
-    except Exception as e:
-        print("Serial error:",e)
-        ser=None
 
 @app.route("/")
 def index():
@@ -26,28 +20,23 @@ def index():
 
 @app.route("/data")
 def get_data():
-    global ser
+    global latest_data
 
-    if ser is None:
-        init_serial()
-
-    if ser and ser.in_waiting:
+    if ser.in_waiting:
+        line=ser.readline().decode().strip()
 
         try:
-            line=ser.readline().decode().strip()
-            print("RAW",line)
-
-            if line!="ERROR":
-                temp,hum,status=line.split(",")
-                latest_data["temperature"]=temp
-                latest_data["humidity"]=hum
-                latest_data["status"]=status
-
+                temp, hum, light, mode, level = line.split(",")
+                latest_data["temperature"] = temp
+                latest_data["humidity"] = hum
+                latest_data["light"] = light
+                latest_data["mode"] = mode
+                latest_data["level"] = level
         except:
             pass
             
 
-        return jsonify(latest_data)
+    return jsonify(latest_data)
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=False)

@@ -4,13 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>환경 모니터링</title>
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+      }
+      .box {
+        width: 300px;
+        margin: auto;
+        padding: 20px;
+        border: 2px solid #333;
+        border-radius: 10px;
+      }
+      .good {
+        color: green;
+      }
+      .caution {
+        color: blue;
+      }
+      .danger {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
-    <h2>실내 환경 모니터링</h2>
+    <h2>스마트 실내 환경 모니터링</h2>
 
-    <p>온도 : <span id="temp">-</span> ℃</p>
-    <p>습도 : <span id="hum">-</span> %</p>
-    <p>상태 : <span id="status">-</span></p>
+    <div class="box">
+      <p>🌡 온도 : <span id="temp">-</span> ℃</p>
+      <p>💧 습도 : <span id="hum">-</span> %</p>
+      <p>💡 조도 : <span id="light">-</span></p>
+      <p>⚙ 모드 : <span id="mode">-</span></p>
+      <p>🚦 상태 : <span id="level">-</span></p>
+    </div>
 
     <script>
       async function fetchData() {
@@ -19,10 +46,19 @@
 
         document.getElementById("temp").innerText = data.temperature;
         document.getElementById("hum").innerText = data.humidity;
-        document.getElementById("status").innerText = data.status;
+        document.getElementById("light").innerText = data.light;
+        document.getElementById("mode").innerText = data.mode;
+
+        const levelElem = document.getElementById("level");
+        levelElem.innerText = data.level;
+
+        levelElem.className = "";
+        if (data.level === "GOOD") levelElem.classList.add("good");
+        else if (data.level === "CAUTION") levelElem.classList.add("caution");
+        else if (data.level === "DANGER") levelElem.classList.add("danger");
       }
 
-      setInterval(fetchData, 2000);
+      setInterval(fetchData, 500);
     </script>
   </body>
 </html>

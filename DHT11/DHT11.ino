@@ -5,9 +5,9 @@
 #define LDR_PIN A0
 #define BUTTON_PIN 7
 #define BUZZER_PIN 6
-#define LED_GREEN 3
-#define LED_BLUE 4
-#define LED_RED 5
+#define LED_GREEN 8
+#define LED_BLUE 9
+#define LED_RED 10
 
 DHT dht(DHTPIN,DHTTYPE);
 
@@ -39,7 +39,7 @@ void setup() {
 }
 
 void loop() {
-  delay(2000);
+  delay(500);
 
   bool buttonState=digitalRead(BUTTON_PIN);
   if(buttonState==LOW && lastButtonState==HIGH){
