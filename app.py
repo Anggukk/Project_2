@@ -3,7 +3,7 @@ import serial
 
 app=Flask(__name__)
 
-ser=serial.Serial("COM3",9600,timeout=1)
+ser=serial.Serial("COM3",115200,timeout=1)
 
 
 latest_data = {

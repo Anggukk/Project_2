@@ -24,7 +24,7 @@ bool lastButtonState=LOW;
 String level="GOOD";
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   dht.begin();
 
   pinMode(LDR_PIN, INPUT);
